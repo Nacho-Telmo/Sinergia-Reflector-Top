@@ -201,7 +201,7 @@ class ReflectorApp:
     self.status_box.config(state=tk.NORMAL)
     self.status_box.insert(tk.END, message)
     self.status_box.see(tk.END)
-    self.status_box.config(state=tk.END)
+    self.status_box.config(state=tk.DISABLED) # <-- Cambiado de tk.END a tk.DISABLED
 
 
 if __name__ == "__main__":
