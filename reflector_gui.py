@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import subprocess
 import threading
 import tkinter as tk
@@ -133,17 +134,23 @@ class ReflectorApp:
   def run_reflector(self):
     count = self.mirror_count.get()
 
+    # Comando optimizado: se limita a 50 espejos recientes con máximo 24 horas de antigüedad
     bash_script = (
         f"cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak && "
-        f"reflector --latest 100 --protocol https --sort rate --number {count}"
-        f" --save /etc/pacman.d/mirrorlist"
+        f"reflector --latest 50 --age 24 --protocol https --sort rate --number"
+        f" {count} --save /etc/pacman.d/mirrorlist"
     )
 
     cmd = ["pkexec", "bash", "-c", bash_script]
 
     try:
+      # Se incluye env=os.environ para que pkexec detecte la sesión gráfica (DISPLAY) y pida la contraseña
       process = subprocess.Popen(
-          cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+          cmd,
+          stdout=subprocess.PIPE,
+          stderr=subprocess.PIPE,
+          text=True,
+          env=os.environ,
       )
       stdout, stderr = process.communicate()
 
@@ -201,3 +208,6 @@ if __name__ == "__main__":
   root = tk.Tk()
   app = ReflectorApp(root)
   root.mainloop()
+
+
+
