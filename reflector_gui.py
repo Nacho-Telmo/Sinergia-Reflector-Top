@@ -134,10 +134,10 @@ class ReflectorApp:
   def run_reflector(self):
     count = self.mirror_count.get()
 
-    # Comando optimizado: se limita a 50 espejos recientes con máximo 24 horas de antigüedad
+    # Comando optimizado: --latest 40 y --threads 5 para acelerar el sondeo masivo
     bash_script = (
         f"cp /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak && "
-        f"reflector --latest 50 --age 24 --protocol https --sort rate --number"
+        f"reflector --latest 40 --age 24 --protocol https --sort rate --threads 5 --number"
         f" {count} --save /etc/pacman.d/mirrorlist"
     )
 
@@ -201,7 +201,7 @@ class ReflectorApp:
     self.status_box.config(state=tk.NORMAL)
     self.status_box.insert(tk.END, message)
     self.status_box.see(tk.END)
-    self.status_box.config(state=tk.DISABLED) # <-- Cambiado de tk.END a tk.DISABLED
+    self.status_box.config(state=tk.DISABLED)
 
 
 if __name__ == "__main__":
